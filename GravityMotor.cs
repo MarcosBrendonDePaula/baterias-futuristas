@@ -1,5 +1,12 @@
 namespace BateriasFuturistas
 {
+    public enum GravityMotorState
+    {
+        Idle,
+        Charging,
+        Discharging,
+    }
+
     public class GravityMotor : KMonoBehaviour
     {
         private const string LoopSoundName = "ManualPressureDoor_gear_LP";
@@ -10,7 +17,9 @@ namespace BateriasFuturistas
         [MyCmpGet]
         private LoopingSounds sounds;
 
-        private bool running;
+        private GravityMotorState state = GravityMotorState.Idle;
+
+        public GravityMotorState State => state;
 
         protected override void OnSpawn()
         {
@@ -18,23 +27,31 @@ namespace BateriasFuturistas
             animation.Play("on");
         }
 
-        public void SetRunning(bool value)
+        public void SetState(GravityMotorState value)
         {
-            if (running == value)
+            if (state == value)
             {
                 return;
             }
-            running = value;
+            bool wasRunning = state != GravityMotorState.Idle;
+            state = value;
             string sound = GlobalAssets.GetSound(LoopSoundName);
-            if (running)
+            switch (state)
             {
-                animation.Play("working_loop", KAnim.PlayMode.Loop);
-                sounds.StartSound(sound);
+                case GravityMotorState.Charging:
+                    animation.Play("working_loop", KAnim.PlayMode.Loop);
+                    break;
+                case GravityMotorState.Discharging:
+                    animation.Play("discharge_loop", KAnim.PlayMode.Loop);
+                    break;
+                default:
+                    animation.Play("on");
+                    sounds.StopSound(sound);
+                    return;
             }
-            else
+            if (!wasRunning)
             {
-                animation.Play("on");
-                sounds.StopSound(sound);
+                sounds.StartSound(sound);
             }
         }
     }

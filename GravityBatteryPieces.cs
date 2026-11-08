@@ -68,6 +68,7 @@ namespace BateriasFuturistas
             storage.storageFilters = STORAGEFILTERS.NOT_EDIBLE_SOLIDS;
             storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
             storage.showCapacityStatusItem = true;
+            go.AddOrGet<DropAllWorkable>();
             Prioritizable.AddRef(go);
         }
     }

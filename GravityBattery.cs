@@ -40,7 +40,7 @@ namespace BateriasFuturistas
 
         protected virtual int MotorCell => Grid.OffsetCell(Grid.PosToCell(this), 0, building.Def.HeightInCells - 1);
 
-        private float MassCapacity =>
+        public float MassCapacity =>
             Mathf.Max(MinimumCapacity, storage.MassStored() * JoulesPerKgPerTile * HeightTiles);
 
         public float UserMaxCapacity
@@ -49,8 +49,17 @@ namespace BateriasFuturistas
             set
             {
                 userMaxCapacity = value;
-                filteredStorage.FilterChanged();
+                ApplyUserCapacity();
             }
+        }
+
+        protected virtual bool UsesDeliveries => true;
+
+        protected virtual float PreservedCharge => 0f;
+
+        protected virtual void ApplyUserCapacity()
+        {
+            filteredStorage.FilterChanged();
         }
 
         public float AmountStored => storage.MassStored();
@@ -68,25 +77,28 @@ namespace BateriasFuturistas
         protected override void OnPrefabInit()
         {
             base.OnPrefabInit();
-            filteredStorage = new FilteredStorage(this, null, this, false, Db.Get().ChoreTypes.PowerFetch);
+            if (UsesDeliveries)
+            {
+                filteredStorage = new FilteredStorage(this, null, this, false, Db.Get().ChoreTypes.PowerFetch);
+            }
         }
 
         protected override void OnSpawn()
         {
             base.OnSpawn();
             storage.capacityKg = MaxMassFor(primaryElement.ElementID);
-            filteredStorage.FilterChanged();
+            ApplyUserCapacity();
         }
 
         protected override void OnCleanUp()
         {
-            filteredStorage.CleanUp();
+            filteredStorage?.CleanUp();
             base.OnCleanUp();
         }
 
         public override void EnergySim200ms(float dt)
         {
-            float massCapacity = MassCapacity;
+            float massCapacity = Mathf.Max(MassCapacity, PreservedCharge);
             capacity = massCapacity;
             base.EnergySim200ms(dt);
 
@@ -106,7 +118,7 @@ namespace BateriasFuturistas
         {
         }
 
-        private static float MaxMassFor(SimHashes material)
+        protected virtual float MaxMassFor(SimHashes material)
         {
             switch (material)
             {

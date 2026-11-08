@@ -29,6 +29,8 @@ VENT_X = (-55.0, 50.6)
 VENT_Y = -205.0
 VENT_SIZE = (54, 29)
 MOTOR_FRAMES = 30
+ICON_MAX_SIZE = 128
+BASE_VARIANTS = (("gravity_base", "weight.png"), ("gravity_hydraulic_base", "tank.png"))
 FPS = 30.0
 STATIC_ANIMS = ("off", "on", "working_pre", "working_loop", "working_pst", "place")
 
@@ -142,13 +144,13 @@ def pulley_sprite(motor, center):
     return sprite
 
 
-def motor_frames(width):
+def motor_frames(width, direction, glow_base, glow_swing):
     left = (LEFT_PULLEY[0] - width / 2, LEFT_PULLEY[1] - 2 * TILE)
     right = (RIGHT_PULLEY[0] - width / 2, RIGHT_PULLEY[1] - 2 * TILE)
     frames = []
     for index in range(MOTOR_FRAMES):
-        turn = 360.0 * index / MOTOR_FRAMES
-        glow = 0.45 + 0.45 * math.sin(math.radians(turn * 2))
+        turn = direction * 360.0 * index / MOTOR_FRAMES
+        glow = glow_base + glow_swing * math.sin(math.radians(abs(turn) * 2))
         frames.append([
             element("vent_glow", x=VENT_X[0], y=VENT_Y, alpha=glow),
             element("vent_glow", x=VENT_X[1], y=VENT_Y, alpha=glow),
@@ -184,11 +186,16 @@ def write_kanim(name, atlas, anims):
     (folder / f"{name}_anim.bytes").write_bytes(anim_bytes(anims, atlas.symbols))
 
 
+def thumbnail(sprite):
+    factor = ICON_MAX_SIZE / max(sprite.size)
+    return sprite.resize((round(sprite.width * factor), round(sprite.height * factor)), Image.LANCZOS)
+
+
 def structure(name, sprite, extra_body=(), extra_anims=(), extra_symbols=(), working_frames=None):
     atlas = Atlas()
     pivot = (0.0, -sprite.height / 2)
     atlas.add("structure", sprite, pivot)
-    atlas.add("ui", sprite, pivot)
+    atlas.add("ui", thumbnail(sprite), (0.0, 0.0))
     for symbol, image, symbol_pivot in extra_symbols:
         atlas.add(symbol, image, symbol_pivot)
     bounds = (0, -sprite.height / 2, 600, sprite.height)
@@ -203,7 +210,6 @@ def structure(name, sprite, extra_body=(), extra_anims=(), extra_symbols=(), wor
 
 def main():
     tower = fit(ART / "tower.png", height=TOWER_HEIGHT)
-    weight = fit(ART / "weight.png", width=WEIGHT_WIDTH)
     width = tower.width
 
     # Every seam is cut at the center of a crossbar so stacked pieces continue each other.
@@ -215,7 +221,10 @@ def main():
         ("pulley_right", pulley_sprite(motor, RIGHT_PULLEY), (0.0, 0.0)),
         ("vent_glow", Image.new("RGBA", VENT_SIZE, (255, 150, 40, 200)), (0.0, 0.0)),
     ]
-    structure("gravity_motor", motor, extra_symbols=motor_symbols, working_frames=motor_frames(width))
+    motor_bounds = (0, -TILE, 600, 2 * TILE)
+    discharge = [("discharge_loop", motor_bounds, motor_frames(width, -1, 0.15, 0.10))]
+    charge_frames = motor_frames(width, 1, 0.55, 0.40)
+    structure("gravity_motor", motor, extra_anims=discharge, extra_symbols=motor_symbols, working_frames=charge_frames)
     structure("gravity_rail", rail)
 
     target = Image.new("RGBA", (TARGET_SIZE, TARGET_SIZE), (0, 0, 0, 0))
@@ -225,22 +234,24 @@ def main():
         cable_frames.append([element("cable", scale_y=length / CABLE_SIZE[1], y=length / 2)])
     led_frames = [[element("logic_led", 0, y=LED_Y)], [element("logic_led", 1, y=LED_Y)]]
     meter_bounds = (0, -TILE, 600, 2 * TILE)
-    extras = [
-        ("meter", meter_bounds, [[element("meter_target")], [element("meter_target")]]),
-        ("logicmeter", meter_bounds, led_frames),
-        ("weight", (0, 0, 2 * WEIGHT_WIDTH, 2 * weight.height), [[element("weight")]]),
-        ("cable", (0, CABLE_MAX_UNITS / 2, 200, CABLE_MAX_UNITS), cable_frames),
-    ]
-    symbols = [
-        ("weight", weight, (0.0, 0.0)),
-        ("cable", cable_sprite(), (0.0, 0.0)),
-        ("meter_target", target, (0.0, 0.0)),
-        ("logicmeter_target", target, (0.0, 0.0)),
-        ("logic_led", led_sprite((225, 70, 60, 255)), (0.0, 0.0)),
-        ("logic_led", led_sprite((95, 220, 90, 255)), (0.0, 0.0)),
-    ]
     body = [element("meter_target"), element("logicmeter_target")]
-    structure("gravity_base", base, body, extras, symbols)
+    for kanim_name, art_file in BASE_VARIANTS:
+        load = fit(ART / art_file, width=WEIGHT_WIDTH)
+        extras = [
+            ("meter", meter_bounds, [[element("meter_target")], [element("meter_target")]]),
+            ("logicmeter", meter_bounds, led_frames),
+            ("weight", (0, 0, 2 * WEIGHT_WIDTH, 2 * load.height), [[element("weight")]]),
+            ("cable", (0, CABLE_MAX_UNITS / 2, 200, CABLE_MAX_UNITS), cable_frames),
+        ]
+        symbols = [
+            ("weight", load, (0.0, 0.0)),
+            ("cable", cable_sprite(), (0.0, 0.0)),
+            ("meter_target", target, (0.0, 0.0)),
+            ("logicmeter_target", target, (0.0, 0.0)),
+            ("logic_led", led_sprite((225, 70, 60, 255)), (0.0, 0.0)),
+            ("logic_led", led_sprite((95, 220, 90, 255)), (0.0, 0.0)),
+        ]
+        structure(kanim_name, base, body, extras, symbols)
     print("base", base.size, "rail", rail.size, "motor", motor.size)
 
 

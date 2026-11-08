@@ -30,7 +30,23 @@ namespace BateriasFuturistas
 
         public bool IsComplete => measuredHeight > 0;
 
+        public int MeasuredHeight => measuredHeight;
+
+        public float WeightCenterTiles => weight.gameObject.transform.GetPosition().y - transform.GetPosition().y;
+
+        public float ExpectedWeightCenterTiles
+        {
+            get
+            {
+                float top = Mathf.Max(WeightRestCenterTiles, measuredHeight - MotorClearanceTiles);
+                return Mathf.Lerp(WeightRestCenterTiles, top, Mathf.Clamp01(JoulesAvailable / MassCapacity));
+            }
+        }
+
         protected override int HeightTiles => measuredHeight;
+
+        // An unfinished tower keeps its charge so it can be upgraded without losing energy.
+        protected override float PreservedCharge => IsComplete ? 0f : JoulesAvailable;
 
         protected override int MotorCell =>
             measuredMotorCell == Grid.InvalidCell ? Grid.PosToCell(this) : measuredMotorCell;
@@ -88,13 +104,22 @@ namespace BateriasFuturistas
             }
             if (motor != null && motor != current)
             {
-                motor.SetRunning(false);
+                motor.SetState(GravityMotorState.Idle);
             }
             motor = current;
             if (motor != null)
             {
-                motor.SetRunning(Mathf.Abs(LastStoredDelta) > MotorRunningJoules);
+                motor.SetState(CurrentMotorState());
             }
+        }
+
+        private GravityMotorState CurrentMotorState()
+        {
+            if (LastStoredDelta > MotorRunningJoules)
+            {
+                return GravityMotorState.Charging;
+            }
+            return LastStoredDelta < -MotorRunningJoules ? GravityMotorState.Discharging : GravityMotorState.Idle;
         }
 
         private void PlaceVisuals(float weightCenter, float cableLength)
