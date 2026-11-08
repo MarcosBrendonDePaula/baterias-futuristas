@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>BateriasFuturistas</AssemblyName>
+    <RootNamespace>BateriasFuturistas</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GameManaged>D:\SteamLibrary\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</GameManaged>
+    <ModFolder>$(USERPROFILE)\Documents\Klei\OxygenNotIncluded\mods\Local\BateriasFuturistas</ModFolder>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <Reference Include="$(GameManaged)\Assembly-CSharp.dll" Private="false" />
+    <Reference Include="$(GameManaged)\Assembly-CSharp-firstpass.dll" Private="false" />
+    <Reference Include="$(GameManaged)\0Harmony.dll" Private="false" />
+    <Reference Include="$(GameManaged)\FMODUnity.dll" Private="false" />
+    <Reference Include="$(GameManaged)\UnityEngine.CoreModule.dll" Private="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="mod\**" />
+  </ItemGroup>
+  <Target Name="InstallMod" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModFolder)" />
+    <Copy SourceFiles="mod\mod.yaml;mod\mod_info.yaml" DestinationFolder="$(ModFolder)" />
+    <ItemGroup>
+      <AnimFiles Include="anim\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AnimFiles)" DestinationFiles="@(AnimFiles->'$(ModFolder)\anim\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+</Project>
