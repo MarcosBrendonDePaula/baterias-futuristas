@@ -5,8 +5,14 @@
     <RootNamespace>BateriasFuturistas</RootNamespace>
     <LangVersion>latest</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Configurations>Dev;Release</Configurations>
     <GameManaged>D:\SteamLibrary\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</GameManaged>
     <ModFolder>$(USERPROFILE)\Documents\Klei\OxygenNotIncluded\mods\Local\BateriasFuturistas</ModFolder>
+    <PublishFolder>$(MSBuildProjectDirectory)\publish\BateriasFuturistas</PublishFolder>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <Optimize>true</Optimize>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
@@ -14,17 +20,28 @@
     <Reference Include="$(GameManaged)\Assembly-CSharp-firstpass.dll" Private="false" />
     <Reference Include="$(GameManaged)\0Harmony.dll" Private="false" />
     <Reference Include="$(GameManaged)\FMODUnity.dll" Private="false" />
+    <Reference Include="$(GameManaged)\UnityEngine.ScreenCaptureModule.dll" Private="false" />
     <Reference Include="$(GameManaged)\UnityEngine.CoreModule.dll" Private="false" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="mod\**" />
+    <Compile Remove="publish\**" />
+    <Compile Remove="AutoTest.cs" Condition="'$(Configuration)' != 'Dev'" />
   </ItemGroup>
-  <Target Name="InstallMod" AfterTargets="Build">
+  <ItemGroup>
+    <AnimFiles Include="anim\**\*" />
+  </ItemGroup>
+  <Target Name="InstallDevMod" AfterTargets="Build" Condition="'$(Configuration)' == 'Dev'">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModFolder)" />
     <Copy SourceFiles="mod\mod.yaml;mod\mod_info.yaml" DestinationFolder="$(ModFolder)" />
-    <ItemGroup>
-      <AnimFiles Include="anim\**\*" />
-    </ItemGroup>
+    <Copy SourceFiles="mod\translations\pt_BR.po" DestinationFolder="$(ModFolder)\translations" />
     <Copy SourceFiles="@(AnimFiles)" DestinationFiles="@(AnimFiles->'$(ModFolder)\anim\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+  <Target Name="CreatePublishFolder" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <RemoveDir Directories="$(PublishFolder)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PublishFolder)" />
+    <Copy SourceFiles="mod\mod.yaml;mod\mod_info.yaml" DestinationFolder="$(PublishFolder)" />
+    <Copy SourceFiles="mod\translations\pt_BR.po" DestinationFolder="$(PublishFolder)\translations" />
+    <Copy SourceFiles="@(AnimFiles)" DestinationFiles="@(AnimFiles->'$(PublishFolder)\anim\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>

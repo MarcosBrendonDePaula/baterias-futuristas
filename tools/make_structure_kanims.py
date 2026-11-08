@@ -30,6 +30,26 @@ VENT_Y = -205.0
 VENT_SIZE = (54, 29)
 MOTOR_FRAMES = 30
 ICON_MAX_SIZE = 128
+THERMAL_HEIGHT = 1600
+THERMAL_GLOW_SIZE = (290, 749)
+THERMAL_GLOW_X = 36.6
+THERMAL_GLOW_Y = -792.4
+SIMPLE_BATTERIES = (
+    ("flywheel", 5, (329, 436, 126)),
+    ("compressed_air", 7, None),
+    ("flow_battery", 8, None),
+    ("molten_salt", 10, None),
+)
+THERMAL_FRAMES = 101
+# Glowing regions in source-image pixels: left, top, right, bottom, RGB.
+PULSE_REGIONS = {
+    "thermal_sand": ((412, 600, 615, 880, (255, 90, 20)),),
+    "compressed_air": ((855, 590, 893, 1080, (255, 170, 40)), (125, 600, 170, 1060, (190, 235, 255))),
+    "flow_battery": ((190, 320, 390, 935, (210, 120, 255)), (630, 320, 845, 935, (255, 235, 120))),
+    "molten_salt": ((430, 560, 590, 950, (255, 200, 110)),),
+    "heat_compressor": ((340, 450, 690, 790, (255, 110, 30)),),
+    "expansion_valve": ((484, 430, 540, 630, (120, 230, 255)),),
+}
 BASE_VARIANTS = (("gravity_base", "weight.png"), ("gravity_hydraulic_base", "tank.png"))
 FPS = 30.0
 STATIC_ANIMS = ("off", "on", "working_pre", "working_loop", "working_pst", "place")
@@ -198,7 +218,7 @@ def structure(name, sprite, extra_body=(), extra_anims=(), extra_symbols=(), wor
     atlas.add("ui", thumbnail(sprite), (0.0, 0.0))
     for symbol, image, symbol_pivot in extra_symbols:
         atlas.add(symbol, image, symbol_pivot)
-    bounds = (0, -sprite.height / 2, 600, sprite.height)
+    bounds = (0, -sprite.height / 2, max(600, sprite.width), sprite.height)
     body = [element("structure"), *extra_body]
     anims = [(anim, bounds, [body]) for anim in STATIC_ANIMS if anim != "working_loop" or working_frames is None]
     if working_frames is not None:
@@ -206,6 +226,115 @@ def structure(name, sprite, extra_body=(), extra_anims=(), extra_symbols=(), wor
     anims.append(("ui", bounds, [[element("ui")]]))
     anims.extend(extra_anims)
     write_kanim(name, atlas, anims)
+
+
+def pulse_symbols(name, art_path, sprite_height):
+    source = Image.open(art_path).convert("RGBA")
+    left, top, right, bottom = source.getchannel("A").getbbox()
+    scale = sprite_height / (bottom - top)
+    width = (right - left) * scale
+    symbols = []
+    placements = []
+    for index, (x0, y0, x1, y1, color) in enumerate(PULSE_REGIONS.get(name, ())):
+        size = (max(1, round((x1 - x0) * scale)), max(1, round((y1 - y0) * scale)))
+        symbol = f"pulse_{index}"
+        symbols.append((symbol, Image.new("RGBA", size, (*color, 255)), (0.0, 0.0)))
+        center_x = ((x0 + x1) / 2 - left) * scale - width / 2
+        center_y = ((y0 + y1) / 2 - top) * scale - sprite_height
+        placements.append((symbol, center_x, center_y))
+    return symbols, placements
+
+
+def pulse_elements(placements, frame):
+    turn = math.radians(360.0 * frame / MOTOR_FRAMES)
+    return [
+        element(symbol, x=x, y=y, alpha=0.30 + 0.25 * math.sin(turn + index * math.pi))
+        for index, (symbol, x, y) in enumerate(placements)
+    ]
+
+
+def make_thermal(target):
+    silo = fit(ROOT / "art/thermal_sand/silo.png", height=THERMAL_HEIGHT)
+    glow = Image.new("RGBA", THERMAL_GLOW_SIZE, (255, 120, 20, 220))
+    frames = [
+        [element("glow", x=THERMAL_GLOW_X, y=THERMAL_GLOW_Y, alpha=index / (THERMAL_FRAMES - 1))]
+        for index in range(THERMAL_FRAMES)
+    ]
+    bounds = (0, -THERMAL_HEIGHT / 2, 1100, THERMAL_HEIGHT)
+    pulses, placements = pulse_symbols("thermal_sand", ROOT / "art/thermal_sand/silo.png", THERMAL_HEIGHT)
+    symbols = [("glow", glow, (0.0, 0.0)), ("meter_target", target, (0.0, 0.0)), *pulses]
+    working = [
+        [*pulse_elements(placements, index), element("structure"), element("meter_target")]
+        for index in range(MOTOR_FRAMES)
+    ]
+    structure("thermal_sand", silo, [element("meter_target")], [("meter", bounds, frames)], symbols, working)
+
+
+def make_simple_batteries(target):
+    for name, height_tiles, spinner in SIMPLE_BATTERIES:
+        height = height_tiles * TILE
+        sprite = fit(ROOT / "art" / name / "building.png", height=height)
+        bounds = (0, -height / 2, max(600, sprite.width), height)
+        symbols = [
+            ("meter_target", target, (0.0, 0.0)),
+            ("logicmeter_target", target, (0.0, 0.0)),
+            ("logic_led", led_sprite((225, 70, 60, 255)), (0.0, 0.0)),
+            ("logic_led", led_sprite((95, 220, 90, 255)), (0.0, 0.0)),
+        ]
+        extras = [
+            ("meter", bounds, [[element("meter_target")], [element("meter_target")]]),
+            ("logicmeter", bounds, [[element("logic_led", 0, y=LED_Y)], [element("logic_led", 1, y=LED_Y)]]),
+        ]
+        pulses, placements = pulse_symbols(name, ROOT / "art" / name / "building.png", height)
+        symbols.extend(pulses)
+        working = [
+            [*pulse_elements(placements, index), element("structure"),
+             element("meter_target"), element("logicmeter_target")]
+            for index in range(MOTOR_FRAMES)
+        ]
+        if spinner:
+            center_x, center_y, radius = spinner
+            disc = disc_sprite(sprite, center_x, center_y, radius)
+            symbols.append(("disc", disc, (0.0, 0.0)))
+            x = center_x - sprite.width / 2
+            y = center_y - height
+            working = [
+                [element("disc", x=x, y=y, degrees=360.0 * index / MOTOR_FRAMES), element("structure"),
+                 element("meter_target"), element("logicmeter_target")]
+                for index in range(MOTOR_FRAMES)
+            ]
+        structure(name, sprite, [element("meter_target"), element("logicmeter_target")], extras, symbols, working)
+
+
+def make_heat_pump_pieces():
+    for name, height_tiles, spinner in (("heat_compressor", 2, (232, 98, 43)), ("expansion_valve", 2, None)):
+        height = height_tiles * TILE
+        art = ROOT / "art" / name / "building.png"
+        sprite = fit(art, height=height)
+        symbols, placements = pulse_symbols(name, art, height)
+        extra = []
+        if spinner:
+            center_x, center_y, radius = spinner
+            symbols.append(("disc", disc_sprite(sprite, center_x, center_y, radius), (0.0, 0.0)))
+            extra = [("disc", center_x - sprite.width / 2, center_y - height)]
+        working = []
+        for index in range(MOTOR_FRAMES):
+            spin = [element(s, x=x, y=y, degrees=360.0 * index / MOTOR_FRAMES) for s, x, y in extra]
+            working.append([*pulse_elements(placements, index), *spin, element("structure")])
+        structure(name, sprite, (), (), symbols, working)
+
+
+def disc_sprite(sprite, center_x, center_y, radius):
+    size = 2 * radius
+    left, top = round(center_x) - radius, round(center_y) - radius
+    disc = sprite.crop((left, top, left + size, top + size))
+    pixels = disc.load()
+    middle = (size - 1) / 2
+    for y in range(size):
+        for x in range(size):
+            if ((x - middle) ** 2 + (y - middle) ** 2) ** 0.5 > radius:
+                pixels[x, y] = (0, 0, 0, 0)
+    return disc
 
 
 def main():
@@ -252,6 +381,9 @@ def main():
             ("logic_led", led_sprite((95, 220, 90, 255)), (0.0, 0.0)),
         ]
         structure(kanim_name, base, body, extras, symbols)
+    make_thermal(target)
+    make_simple_batteries(target)
+    make_heat_pump_pieces()
     print("base", base.size, "rail", rail.size, "motor", motor.size)
 
 

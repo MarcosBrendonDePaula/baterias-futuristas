@@ -1,5 +1,5 @@
+using System.Linq;
 using HarmonyLib;
-using STRINGS;
 using UnityEngine;
 
 namespace BateriasFuturistas
@@ -8,7 +8,8 @@ namespace BateriasFuturistas
     {
         private const string PowerCategory = "Power";
         private const string TechId = "AdvancedPowerRegulation";
-        private const string UnsupportedReason = "Precisa ficar em cima de uma base ou de um trilho, alinhado com eles";
+        private const string ThermalTechId = "TemperatureModulation";
+        private const string UtilitiesCategory = "Utilities";
 
         private static readonly string[] BuildablePieces =
         {
@@ -16,42 +17,28 @@ namespace BateriasFuturistas
             GravityBatteryHydraulicConfig.ID,
             GravityBatteryRailConfig.ID,
             GravityBatteryMotorConfig.ID,
+            FlywheelBatteryConfig.ID,
+            CompressedAirBatteryConfig.ID,
+            FlowBatteryConfig.ID,
+            MoltenSaltBatteryConfig.ID,
         };
-
-        private static void AddStrings(string id, string name, string description, string effect)
-        {
-            string prefix = "STRINGS.BUILDINGS.PREFABS." + id.ToUpperInvariant();
-            Strings.Add(prefix + ".NAME", UI.FormatAsLink(name, id));
-            Strings.Add(prefix + ".DESC", description);
-            Strings.Add(prefix + ".EFFECT", effect);
-        }
 
         [HarmonyPatch(typeof(GeneratedBuildings), nameof(GeneratedBuildings.LoadGeneratedBuildings))]
         private static class RegisterBuilding
         {
             private static void Prefix()
             {
-                AddStrings(GravityBatteryConfig.ID, "Bateria Gravitacional Compacta",
-                    "Um peso erguido guarda energia indefinidamente, sem vazamento.",
-                    "Versão antiga em torre fixa.");
-                AddStrings(GravityBatteryBaseConfig.ID, "Base da Bateria Gravitacional",
-                    "A base guarda o peso e faz a ligação elétrica da torre.",
-                    "Precisa de trilhos empilhados e de um motor no topo. A energia guardada cresce com a massa e com a altura da torre.\n\nNão perde carga parada, mas gera calor no motor ao carregar e descarregar.");
-                AddStrings(GravityBatteryHydraulicConfig.ID, "Base Hidráulica Gravitacional",
-                    "Um tanque selado de líquido serve de peso para a torre.",
-                    "Enche pelo cano de líquido. Precisa de trilhos empilhados e de um motor no topo. A energia guardada cresce com a massa e com a altura da torre.\n\nNão perde carga parada, mas gera calor no motor ao carregar e descarregar.");
-                AddStrings(GravityBatteryRailConfig.ID, "Trilho Gravitacional",
-                    "Cada trilho aumenta a altura da queda do peso.",
-                    "Empilhe sobre a base ou sobre outro trilho. O limite de altura depende do metal da base.");
-                AddStrings(GravityBatteryMotorConfig.ID, "Motor Gravitacional",
-                    "O motor ergue o peso e fecha o topo da torre.",
-                    "Coloque em cima do último trilho para completar a bateria.");
-                foreach (string piece in BuildablePieces)
+                ModText.Register();
+                ModUtil.AddBuildingToPlanScreen(UtilitiesCategory, HeatCompressorConfig.ID);
+                ModUtil.AddBuildingToPlanScreen(UtilitiesCategory, ExpansionValveConfig.ID);
+                foreach (string piece in AllPieces)
                 {
                     ModUtil.AddBuildingToPlanScreen(PowerCategory, piece);
                 }
             }
         }
+
+        private static readonly string[] AllPieces = BuildablePieces.Concat(new[] { ThermalSandBatteryConfig.ID }).ToArray();
 
         private static bool NeedsSupport(BuildingDef def)
         {
@@ -82,7 +69,7 @@ namespace BateriasFuturistas
             if (result && NeedsSupport(def) && !IsSupported(cell))
             {
                 result = false;
-                reason = UnsupportedReason;
+                reason = ModText.Get("UNSUPPORTED");
             }
         }
 
@@ -114,6 +101,9 @@ namespace BateriasFuturistas
             private static void Postfix()
             {
                 Db.Get().Techs.Get(TechId).unlockedItemIDs.AddRange(BuildablePieces);
+                Db.Get().Techs.Get(ThermalTechId).unlockedItemIDs.Add(ThermalSandBatteryConfig.ID);
+                Db.Get().Techs.Get(ThermalTechId).unlockedItemIDs.Add(HeatCompressorConfig.ID);
+                Db.Get().Techs.Get(ThermalTechId).unlockedItemIDs.Add(ExpansionValveConfig.ID);
             }
         }
     }

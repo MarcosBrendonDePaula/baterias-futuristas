@@ -11,6 +11,7 @@ if tasklist | grep -qi OxygenNotIncluded; then
     echo "ERRO: feche o jogo antes do teste"
     exit 2
 fi
+( cd "$(dirname "$0")/.." && dotnet build -c Dev -v q ) || exit 1
 mkdir -p "$MOD/autotest"
 rm -f "$RESULT"
 cp "$SOURCE" "$COPY"

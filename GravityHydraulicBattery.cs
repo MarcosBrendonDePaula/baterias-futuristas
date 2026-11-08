@@ -60,6 +60,8 @@ namespace BateriasFuturistas
                 NOISE_POLLUTION.NOISY.TIER1);
             def.InputConduitType = ConduitType.Liquid;
             def.UtilityInputOffset = new CellOffset(-1, 0);
+            def.OutputConduitType = ConduitType.Liquid;
+            def.UtilityOutputOffset = new CellOffset(1, 0);
             def.LogicOutputPorts = new List<LogicPorts.Port>
             {
                 LogicPorts.Port.OutputPort(
@@ -100,6 +102,7 @@ namespace BateriasFuturistas
             GravityHydraulicBattery battery = go.AddOrGet<GravityHydraulicBattery>();
             battery.capacity = GravityHydraulicBattery.SteelTankMassKg * GravityBattery.JoulesPerKgPerTile * GravityBatteryBase.MaxCableTiles;
             battery.joulesLostPerSecond = 0f;
+            PipeDrain.Configure(go, ConduitType.Liquid);
             base.DoPostConfigureComplete(go);
         }
     }

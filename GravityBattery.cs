@@ -57,6 +57,8 @@ namespace BateriasFuturistas
 
         protected virtual float PreservedCharge => 0f;
 
+        public virtual float ChargeWatts => MotorWatts;
+
         protected virtual void ApplyUserCapacity()
         {
             filteredStorage.FilterChanged();
@@ -111,7 +113,7 @@ namespace BateriasFuturistas
             lastJoules = JoulesAvailable;
             OnEnergyUpdated(massCapacity);
             // CircuitManager ignores chargeWattage on batteries; spare capacity is what limits charging.
-            capacity = Mathf.Min(massCapacity, JoulesAvailable + MotorWatts * dt);
+            capacity = Mathf.Min(massCapacity, JoulesAvailable + ChargeWatts * dt);
         }
 
         protected virtual void OnEnergyUpdated(float massCapacity)

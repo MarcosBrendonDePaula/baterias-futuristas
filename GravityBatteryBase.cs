@@ -12,6 +12,7 @@ namespace BateriasFuturistas
         public const float MaxCableTiles = 100f + GravityBatteryBaseConfig.HeightTiles;
 
         private const int MotorHeightTiles = 2;
+        private const float ReferenceHeightTiles = 6f;
         private const float CableAnimationTiles = 105f;
         private const float WeightRestCenterTiles = 1.53f;
         private const float MotorClearanceTiles = 2.3f;
@@ -44,6 +45,9 @@ namespace BateriasFuturistas
         }
 
         protected override int HeightTiles => measuredHeight;
+
+        // A taller tower keeps roughly the same fill time as the 6-tile reference.
+        public override float ChargeWatts => MotorWatts * Mathf.Max(1f, measuredHeight / ReferenceHeightTiles);
 
         // An unfinished tower keeps its charge so it can be upgraded without losing energy.
         protected override float PreservedCharge => IsComplete ? 0f : JoulesAvailable;

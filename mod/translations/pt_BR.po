@@ -1,0 +1,192 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: pt_BR\n"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.UNSUPPORTED"
+msgid "Must rest on a base or a rail, aligned with it"
+msgstr "Precisa ficar em cima de uma base ou de um trilho, alinhado com eles"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.DRAIN_START"
+msgid "Drain through pipe"
+msgstr "Drenar pelo cano"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.DRAIN_STOP"
+msgid "Stop draining"
+msgstr "Parar de drenar"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.RANGE_TITLE"
+msgid "Sand temperature range"
+msgstr "Faixa de temperatura da areia"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.RANGE_MAX"
+msgid "Maximum"
+msgstr "Máxima"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.RANGE_MIN"
+msgid "Minimum"
+msgstr "Mínima"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.RANGE_MAX_TIP"
+msgid "Maximum temperature of the range"
+msgstr "Temperatura máxima da faixa"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.RANGE_MIN_TIP"
+msgid "Minimum temperature of the range"
+msgstr "Temperatura mínima da faixa"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.SENSOR_PORT"
+msgid "Temperature sensor"
+msgstr "Sensor de temperatura"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.SENSOR_ACTIVE"
+msgid "Green: sand is inside the selected range"
+msgstr "Verde: a areia está dentro da faixa escolhida"
+
+msgctxt "STRINGS.BATERIASFUTURISTAS.UI.SENSOR_INACTIVE"
+msgid "Red: sand is outside the selected range"
+msgstr "Vermelho: a areia está fora da faixa escolhida"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERY.NAME"
+msgid "<link=\"GRAVITYBATTERY\">Compact Gravity Battery</link>"
+msgstr "<link=\"GRAVITYBATTERY\">Bateria Gravitacional Compacta</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERY.DESC"
+msgid "A raised weight stores energy indefinitely, with no leakage."
+msgstr "Um peso erguido guarda energia indefinidamente, sem vazamento."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERY.EFFECT"
+msgid "Legacy fixed-height tower."
+msgstr "Versão antiga em torre fixa."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYBASE.NAME"
+msgid "<link=\"GRAVITYBATTERYBASE\">Gravity Battery Base</link>"
+msgstr "<link=\"GRAVITYBATTERYBASE\">Base da Bateria Gravitacional</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYBASE.DESC"
+msgid "The base holds the weight and connects the tower to power."
+msgstr "A base guarda o peso e faz a ligação elétrica da torre."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYBASE.EFFECT"
+msgid "Needs stacked rails and a motor on top. Stored energy grows with mass and tower height.\n\nDoes not lose charge while idle, but the motor produces heat while charging and discharging."
+msgstr "Precisa de trilhos empilhados e de um motor no topo. A energia guardada cresce com a massa e com a altura da torre.\n\nNão perde carga parada, mas gera calor no motor ao carregar e descarregar."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYHYDRAULICBASE.NAME"
+msgid "<link=\"GRAVITYBATTERYHYDRAULICBASE\">Hydraulic Gravity Base</link>"
+msgstr "<link=\"GRAVITYBATTERYHYDRAULICBASE\">Base Hidráulica Gravitacional</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYHYDRAULICBASE.DESC"
+msgid "A sealed liquid tank serves as the tower weight."
+msgstr "Um tanque selado de líquido serve de peso para a torre."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYHYDRAULICBASE.EFFECT"
+msgid "Fills through a liquid pipe. Needs stacked rails and a motor on top. Stored energy grows with mass and tower height.\n\nDoes not lose charge while idle, but the motor produces heat while charging and discharging."
+msgstr "Enche pelo cano de líquido. Precisa de trilhos empilhados e de um motor no topo. A energia guardada cresce com a massa e com a altura da torre.\n\nNão perde carga parada, mas gera calor no motor ao carregar e descarregar."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYRAIL.NAME"
+msgid "<link=\"GRAVITYBATTERYRAIL\">Gravity Rail</link>"
+msgstr "<link=\"GRAVITYBATTERYRAIL\">Trilho Gravitacional</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYRAIL.DESC"
+msgid "Each rail increases the height of the weight drop."
+msgstr "Cada trilho aumenta a altura da queda do peso."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYRAIL.EFFECT"
+msgid "Stack on a base or another rail. Maximum height depends on the base metal."
+msgstr "Empilhe sobre a base ou sobre outro trilho. O limite de altura depende do metal da base."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYMOTOR.NAME"
+msgid "<link=\"GRAVITYBATTERYMOTOR\">Gravity Motor</link>"
+msgstr "<link=\"GRAVITYBATTERYMOTOR\">Motor Gravitacional</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYMOTOR.DESC"
+msgid "The motor lifts the weight and closes the top of the tower."
+msgstr "O motor ergue o peso e fecha o topo da torre."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.GRAVITYBATTERYMOTOR.EFFECT"
+msgid "Place on top of the last rail to complete the battery."
+msgstr "Coloque em cima do último trilho para completar a bateria."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.THERMALSANDBATTERY.NAME"
+msgid "<link=\"THERMALSANDBATTERY\">Thermal Sand Battery</link>"
+msgstr "<link=\"THERMALSANDBATTERY\">Bateria Térmica de Areia</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.THERMALSANDBATTERY.DESC"
+msgid "Hot sand holds heat for a long time and turns water into steam."
+msgstr "A areia quente guarda calor por muito tempo e transforma água em vapor."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.THERMALSANDBATTERY.EFFECT"
+msgid "Heats sand with electricity. Above 150 °C, water from the pipe leaves as steam.\n\nSand does not lose heat while idle and is delivered by Duplicants. Use automation to cut or allow heating according to the temperature range."
+msgstr "Aquece a areia com eletricidade. Quando a areia passa de 150 °C, a água que entra pelo cano sai como vapor.\n\nA areia não perde calor parada e precisa ser entregue pelos duplicantes. Use a automação para cortar ou liberar o aquecedor conforme a faixa de temperatura."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.FLYWHEELBATTERY.NAME"
+msgid "<link=\"FLYWHEELBATTERY\">Flywheel Battery</link>"
+msgstr "<link=\"FLYWHEELBATTERY\">Bateria de Volante de Inércia</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.FLYWHEELBATTERY.DESC"
+msgid "A spinning disc stores energy and returns it almost without loss, but slowly stops on its own."
+msgstr "Um disco girando guarda energia e a devolve quase sem perdas, mas para sozinho aos poucos."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.FLYWHEELBATTERY.EFFECT"
+msgid "Charges and discharges very quickly. Loses charge quickly while idle."
+msgstr "Carrega e descarrega muito rápido. Perde carga depressa quando fica parada."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.COMPRESSEDAIRBATTERY.NAME"
+msgid "<link=\"COMPRESSEDAIRBATTERY\">Compressed Air Battery</link>"
+msgstr "<link=\"COMPRESSEDAIRBATTERY\">Bateria de Ar Comprimido</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.COMPRESSEDAIRBATTERY.DESC"
+msgid "Gas compressed in a tank stores energy."
+msgstr "Gás comprimido em um tanque guarda energia."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.COMPRESSEDAIRBATTERY.EFFECT"
+msgid "Capacity grows with gas received by pipe. Heats up while charging and cools while discharging."
+msgstr "A capacidade cresce com o gás recebido pelo cano. Esquenta ao carregar e esfria ao descarregar."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.FLOWBATTERY.NAME"
+msgid "<link=\"FLOWBATTERY\">Liquid Flow Battery</link>"
+msgstr "<link=\"FLOWBATTERY\">Bateria de Fluxo Líquido</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.FLOWBATTERY.DESC"
+msgid "Liquid tanks store large amounts of energy."
+msgstr "Tanques de líquido guardam energia em grande quantidade."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.FLOWBATTERY.EFFECT"
+msgid "Capacity grows with liquid received by pipe."
+msgstr "A capacidade cresce com o líquido recebido pelo cano."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.MOLTENSALTBATTERY.NAME"
+msgid "<link=\"MOLTENSALTBATTERY\">Molten Salt Battery</link>"
+msgstr "<link=\"MOLTENSALTBATTERY\">Bateria de Sal Fundido</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.MOLTENSALTBATTERY.DESC"
+msgid "A huge mass of salt stores energy at high temperature."
+msgstr "Uma enorme massa de sal guarda energia em alta temperatura."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.MOLTENSALTBATTERY.EFFECT"
+msgid "Needs salt delivered by Duplicants. The largest capacity in the mod, with low losses."
+msgstr "Precisa de sal entregue pelos duplicantes. A maior capacidade do mod, com poucas perdas."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.HEATCOMPRESSOR.NAME"
+msgid "<link=\"HEATCOMPRESSOR\">Heat Compressor</link>"
+msgstr "<link=\"HEATCOMPRESSOR\">Compressor de Calor</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.HEATCOMPRESSOR.DESC"
+msgid "Compressing a gas into liquid pulls the heat out of it."
+msgstr "Comprimir um gás até virar líquido retira o calor dele."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.HEATCOMPRESSOR.EFFECT"
+msgid "Turns piped gas into liquid. The heat removed from the gas and the electricity used are released at the compressor."
+msgstr "Transforma em líquido o gás recebido pelo cano. O calor retirado do gás e a eletricidade usada saem no compressor."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.EXPANSIONVALVE.NAME"
+msgid "<link=\"EXPANSIONVALVE\">Expansion Valve</link>"
+msgstr "<link=\"EXPANSIONVALVE\">Válvula de Expansão</link>"
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.EXPANSIONVALVE.DESC"
+msgid "A narrow valve lets a little liquid through and it leaves as very cold gas."
+msgstr "Uma válvula estreita deixa passar pouco líquido, que sai como gás muito frio."
+
+msgctxt "STRINGS.BUILDINGS.PREFABS.EXPANSIONVALVE.EFFECT"
+msgid "Turns piped liquid into a small flow of gas just above its boiling point. Needs no power."
+msgstr "Transforma o líquido do cano em um pequeno fluxo de gás, logo acima do ponto de ebulição. Não precisa de energia."

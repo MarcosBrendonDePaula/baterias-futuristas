@@ -1,70 +1,95 @@
 # Baterias Futuristas
 
-Mod para Oxygen Not Included com baterias inspiradas em tecnologias reais. A primeira é a **bateria gravitacional**, uma torre que o jogador monta peça por peça e que guarda energia erguendo um peso.
+Mod para **Oxygen Not Included** com seis formas de guardar energia inspiradas em tecnologias reais, e uma bomba de calor que usa os canos do próprio jogo.
 
-Desenvolvido na build U59-744825. Está em desenvolvimento.
+Desenvolvido na build U59-744825. Está em desenvolvimento, e os valores ainda podem mudar com testes de equilíbrio.
 
-<img src="art/gravity_battery/concept.png" alt="Conceito da bateria gravitacional" width="260">
+![Baterias construídas no jogo](docs/images/no_jogo.png)
 
-## Como montar
+## As baterias
 
-As peças ficam na aba Energia, depois de pesquisar Regulação Avançada de Energia.
+| | Bateria | Tamanho | Capacidade máxima | Destaque |
+| --- | --- | --- | --- | --- |
+| <img src="docs/images/gravitacional.png" width="90" alt="Gravitacional"> | **Gravitacional** | 3 de largura, altura montada | Massa × altura | Não perde carga parada |
+| <img src="docs/images/termica.png" width="90" alt="Térmica de areia"> | **Térmica de areia** | 5×8 | 30 t, cerca de 12 milhões de kDTU | Não perde calor e gera vapor |
+| <img src="docs/images/volante.png" width="90" alt="Volante de inércia"> | **Volante de inércia** | 4×5 | 300 kJ | Carga rápida, perde energia parado |
+| <img src="docs/images/ar_comprimido.png" width="90" alt="Ar comprimido"> | **Ar comprimido** | 4×7 | 1.200 kJ | Esquenta ao carregar, esfria ao descarregar |
+| <img src="docs/images/fluxo.png" width="90" alt="Fluxo líquido"> | **Fluxo líquido** | 6×8 | 3.600 kJ | Enche por cano |
+| <img src="docs/images/sal.png" width="90" alt="Sal fundido"> | **Sal fundido** | 6×10 | 15.000 kJ | A maior do mod |
 
-1. Construa uma base no chão: a **Base da Bateria Gravitacional** ou a **Base Hidráulica Gravitacional**.
+As baterias de carga elétrica têm saída de automação por nível de carga. Ar comprimido, fluxo líquido e a base hidráulica têm o botão **Drenar pelo cano**.
+
+## Bateria gravitacional
+
+A torre é montada peça por peça, na aba Energia, depois de pesquisar Regulação Avançada de Energia.
+
+1. Construa uma base no chão: a **Base da Bateria Gravitacional**, abastecida por duplicantes, ou a **Base Hidráulica Gravitacional**, abastecida por cano.
 2. Empilhe **Trilhos Gravitacionais** sobre ela, sem espaços.
 3. Coloque o **Motor Gravitacional** em cima do último trilho.
 4. Ligue o fio no tile do meio da base.
 
-Trilhos e motor só podem ser colocados sobre uma base ou outro trilho, alinhados.
+| Metal da base | Peso máximo | Tanque hidráulico | Trilhos máximos |
+| --- | --- | --- | --- |
+| Aço | 16 t | 10 t | 100 |
+| Ferro | 8 t | 5 t | 50 |
+| Outros | 4 t | 3 t | 20 |
 
-## As duas bases
+- **Capacidade:** cerca de 8,3 J por kg, por tile de altura.
+- **Perdas:** 5% ao carregar e 3% ao descarregar, viradas em calor no motor.
+- **Potência:** 480 W em uma torre de 6 tiles, crescendo com a altura.
+- **Aumentar a torre:** desconstrua o motor, empilhe mais trilhos e recoloque o motor. A carga fica guardada durante a obra.
 
-| | Base de peso | Base hidráulica |
-| --- | --- | --- |
-| Abastecimento | Duplicantes trazem sólidos escolhidos no filtro | Cano de líquido no tile esquerdo da base |
-| Massa máxima (aço) | 16 t | 10 t |
-| Massa máxima (ferro) | 8 t | 5 t |
-| Massa máxima (outros metais) | 4 t | 3 t |
+## Bateria térmica de areia
 
-O metal da base também define a altura: 100 trilhos em aço, 50 em ferro e 20 nos demais.
+Aquece a areia com eletricidade e usa esse calor para transformar água em vapor. Libera com a pesquisa Modulação de Temperatura.
 
-## Como funciona
+- **Conexões:** fio no tile do meio da base, água no tile esquerdo da base e vapor no tile direito do topo.
+- **Aquecedor:** 2 kW, até 500 °C.
+- **Vapor:** começa quando a areia passa de 150 °C.
+- **Automação:** a entrada liga ou para o aquecedor, e a saída fica verde dentro de uma faixa de temperatura ajustável.
 
-- **Capacidade:** massa × altura total, com cerca de 8,3 J por kg, por tile.
-- **Parada:** não perde carga nem gera calor.
-- **Perdas:** 5% ao carregar e 3% ao descarregar. A energia perdida vira calor no motor.
-- **Potência:** o motor carrega a até 480 W.
-- **Automação:** a base tem saída lógica e faixa de ativação, como a bateria inteligente do jogo.
+## Bomba de calor
 
-## Aumentar ou consertar a torre
+<img src="docs/images/compressor.png" width="150" alt="Compressor de Calor"> <img src="docs/images/valvula.png" width="80" alt="Válvula de Expansão">
 
-Desconstrua o motor, empilhe mais trilhos e recoloque o motor. A carga fica guardada enquanto a torre estiver incompleta, mas a bateria não aceita carga nova nesse período. Aparelhos ligados nela ainda podem consumir a energia guardada.
+Duas peças, na aba Utilitários, ligadas pelos canos do jogo:
+
+| Peça | Entra | Sai | Energia |
+| --- | --- | --- | --- |
+| **Compressor de Calor** (2×2) | Gás | Líquido, até 1 kg/s | 1.200 W |
+| **Válvula de Expansão** (1×2) | Líquido | Gás muito frio, 0,2 kg/s | Não usa |
+
+O calor retirado do gás e a energia gasta saem no compressor. Use **canos isolados** entre o compressor e a válvula, porque em cano comum o líquido esquenta acima do ponto de ebulição.
+
+Resfriamento de uma válvula, com ambiente a 20 °C: hidrogênio 130 kDTU/s, metano 79, gás ácido 68, oxigênio 40, propano 29, dióxido de carbono 11 e cloro 5.
 
 ## Limitações conhecidas
 
-- A base hidráulica ainda não tem saída por cano.
-- O tanque aparece azul com qualquer líquido.
-- O medidor desenhado nos trilhos é só visual e repete a cada peça.
+- O sal não solidifica se esfriar.
+- A base de peso e as baterias de areia e sal não têm saída por cano.
+- O tanque hidráulico aparece azul com qualquer líquido.
+- Saves com peças do mod dependem dele instalado.
 
 ## Compilar
 
-É preciso ter o jogo instalado e o .NET SDK. Ajuste `GameManaged` em `BateriasFuturistas.csproj` para a pasta do seu jogo e rode:
+É preciso ter o jogo instalado e o .NET SDK. Ajuste `GameManaged` em `BateriasFuturistas.csproj` para a pasta do seu jogo.
 
-```
-dotnet build -c Release
-```
-
-O build instala o mod em `Documents\Klei\OxygenNotIncluded\mods\Local\BateriasFuturistas`. Depois, ative **Baterias Futuristas** no menu de mods.
+- `dotnet build -c Dev` compila com o modo de teste e instala em `Documents\Klei\OxygenNotIncluded\mods\Local\BateriasFuturistas`. Depois, ative **Baterias Futuristas** no menu de mods.
+- `dotnet build -c Release` compila sem o modo de teste e gera em `publish/BateriasFuturistas` a pasta limpa para publicar.
 
 ## Testes automáticos
 
-O mod tem um modo de teste que roda dentro do jogo. Ele abre uma cópia de um save, constrói as peças, faz as verificações, grava `autotest_result.txt` na pasta do mod e fecha o jogo. Com o jogo fechado, rode em um terminal Bash:
+Só a compilação Dev inclui o modo de teste, que roda dentro do jogo. Ele abre uma cópia de um save, constrói as peças, faz as verificações, grava `autotest_result.txt` na pasta do mod e fecha o jogo. Com o jogo fechado, rode em um terminal Bash:
 
 ```
 bash tools/run_autotest.sh "caminho/do/save.sav"
 ```
 
-Ajuste `GAME_DIR` no script se o jogo estiver em outra pasta. O modo só fica ativo enquanto o arquivo `autotest.flag` existir na pasta do mod.
+Ajuste `GAME_DIR` no script se o jogo estiver em outra pasta.
+
+## Traduções
+
+O texto padrão é em inglês. As traduções ficam em `mod/translations/<idioma>.po`, no formato usado pelo jogo. Já existe `pt_BR.po`.
 
 ## Arte
 
